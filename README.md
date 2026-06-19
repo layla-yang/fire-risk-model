@@ -1,6 +1,6 @@
 # Wildfire Total-Loss Forecasting Model
 
-A data-driven model for evaluating wildfire risk to a specific real-estate purchase, built around a self-insurance / buy-or-not decision for a 1980 multi-unit condo at **759 Boulder Ct, Stateline NV** (Lake Tahoe basin).
+A data-driven model for evaluating wildfire risk to a specific real-estate purchase, built around a self-insurance / buy-or-not decision for a 1980 multi-unit condo at Lake Tahoe basin.
 
 This repository contains the full reproducible pipeline:
 - Databricks notebooks (Phase 1 → Phase 3 + Bayesian)
