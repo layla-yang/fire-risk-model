@@ -39,6 +39,70 @@ The official US WRC FSim model said this parcel has only **0.04% annual fire cha
 
 CAL FIRE DINS (lat/lon-filtered) confirms **~640 structures destroyed within 20 miles of the parcel in the last 41 years**, dominated by Caldor (318), Angora (309), Tamarack (13).
 
+## Live deployment
+
+The full model runs on a Databricks workspace with Unity Catalog tables backing an interactive app.
+
+### Workspace
+
+| Resource | URL / identifier |
+|---|---|
+| **Databricks workspace** | [`https://fevm-wildfire-risk.cloud.databricks.com`](https://fevm-wildfire-risk.cloud.databricks.com) |
+| **CLI profile** | `fe-vm-wildfire-risk` |
+| **Region** | `us-west-2` (AWS, serverless) |
+| **SQL warehouse** | `Serverless Starter Warehouse` (ID `309c89fad003bef2`, Small) |
+| **Workspace lifetime** | Provisioned 2026-06-19, expires 2026-07-19 (30-day FE-VM TTL) |
+
+### Notebooks (in workspace)
+
+- [`/Workspace/Users/layla.yang@databricks.com/wildfire_risk_phase1`](https://fevm-wildfire-risk.cloud.databricks.com/#workspace/Users/layla.yang@databricks.com/wildfire_risk_phase1) — Phase 1 (80/20 model)
+- [`/Workspace/Users/layla.yang@databricks.com/wildfire_risk_v2`](https://fevm-wildfire-risk.cloud.databricks.com/#workspace/Users/layla.yang@databricks.com/wildfire_risk_v2) — Consolidated Phase 1+2+2.5+3 with PyMC Bayesian + Cal-Adapt climate
+
+### Unity Catalog tables (`wildfire_risk_catalog`)
+
+**Bronze** (raw / lightly-processed data from public APIs):
+
+| Table | Rows | Description |
+|---|---|---|
+| `bronze.fsim_parcel_sample` | 75 | USFS WRC FSim BP/FLEP4/FLEP8 values on a 5×5 grid (30m cells) around the parcel, with scaling factor + provenance |
+| `bronze.dins_raw` | 132,522 | Full CAL FIRE Damage Inspection (DINS) database with 45 fields per inspected structure |
+| `bronze.fire_history` | 394 | NIFC Interagency Fire Perimeter History (fires ≥100 acres within 50 mi of parcel since 1984, including full polygon geometry as GeoJSON) |
+| `bronze.caladapt_tasmax` | 8 series × ~95 yrs | Cal-Adapt LOCA CMIP5 annual maximum-temperature projections at the parcel point (4 GCMs × 2 RCPs) |
+
+Plus a volume `bronze.raw` containing the original API responses for full audit trail:
+- `parcel_geocode_provenance_v2026-06-19.json`
+- `fsim_grid_parcel_v2026-06-19.json`
+- `nifc_fires_v2026-06-19.json`
+- `dins_raw_v2026-06-19.ndjson` (175 MB)
+
+**Gold** (decision-ready outputs):
+
+| Table | Rows | Description |
+|---|---|---|
+| `gold.decision_table_phase2` | 12 | Phase 1/2/3/4 × 5/10/15-year horizons. Columns: `p_loss_median`, `p_loss_p5`, `p_loss_p95`, `e_loss_usd`, `p95_loss_usd`, `p99_loss_usd`, `cum_premium_usd`, `verdict` |
+| `gold.mc_dollar_distribution` | 30,000 | Long-format Monte Carlo iteration results (10K iters × 3 horizons) — used to back the dashboards and recompute distributions on demand |
+
+### Interactive Databricks App
+
+🔗 **[https://wildfire-fire-history-map-7474658710602767.aws.databricksapps.com](https://wildfire-fire-history-map-7474658710602767.aws.databricksapps.com)** (requires workspace SSO)
+
+Four tabs:
+1. **🗺️ Fire history map** — zoomable OpenStreetMap with 394 fire perimeters (or hover-only marker mode), distance rings, parcel marker, decade-layer toggles, click-to-zoom from the fire table
+2. **📋 Historical destruction near here** — 41-year structure-loss summary (~640 destructions within 20 mi, dominated by Caldor 2021, Angora 2007, Tamarack 2021)
+3. **🎯 What does 1-in-25 feel like?** — calibration tab comparing 4%-over-15-years to other life-event probabilities, with flood-zone real-estate as the closest parallel
+4. **🏠 Should you buy?** — financial walk-through with STR income, 30-yr mortgage at 15% down, Schedule E tax write-off, and per-scenario payment-timing cards (settle vs. default path)
+
+App identifiers:
+- App name: `wildfire-fire-history-map`
+- Source path: `/Workspace/Users/layla.yang@databricks.com/apps/wildfire-fire-history-map`
+- Service principal: `3dcea42d-ae65-4d21-83d4-2de7adb8d2d5` (granted `CAN_USE` on the SQL warehouse and `SELECT` on `bronze.fire_history` + `gold.decision_table_phase2`)
+
+### Lakeview dashboard
+
+🔗 **[Wildfire Self-Insurance Decision Dashboard](https://fevm-wildfire-risk.cloud.databricks.com/dashboardsv3/01f16b9d7c30152da619cd90f6dc7dff/published)** (workspace SSO)
+
+Headline counters + the gold-table-backed decision matrix + MC outcome distribution. Built programmatically via the Dashboard API (see `scripts/build_lakeview_dashboard.py`).
+
 ## Repository structure
 
 ```
