@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# Databricks local state
+.databricks/
+.dbutils/
+
+# Local OS
+.DS_Store
+Thumbs.db
+
+# Large raw data (reproducible from source APIs)
+*.ndjson
+*_raw.json
+dins_raw*
+nifc_fires*
+
+# Local secrets / configs
+.env
+*.local.json
+sql_payload.json
+
+# IDE
+.vscode/
+.idea/
+*.swp

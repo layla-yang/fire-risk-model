@@ -1,0 +1,142 @@
+{
+  "config": {
+    "parcel": {
+      "address": "759 Boulder Ct, Stateline, NV 89449",
+      "lat": 38.967876,
+      "lon": -119.887425
+    },
+    "financials": {
+      "shell_basis_usd": 334000,
+      "premium_saved_annual_usd": 24000
+    },
+    "horizons_years": [
+      5,
+      10,
+      15
+    ],
+    "monte_carlo": {
+      "iters": 10000,
+      "random_seed": 42
+    },
+    "vulnerability_scenarios": {
+      "best_realized": {
+        "prob": 0.2,
+        "mult": 0.3
+      },
+      "expected": {
+        "prob": 0.5,
+        "mult": 0.55
+      },
+      "degraded": {
+        "prob": 0.25,
+        "mult": 0.75
+      },
+      "worst": {
+        "prob": 0.05,
+        "mult": 0.9
+      }
+    },
+    "hazard_model": {
+      "ember_baseline_central": 0.0002,
+      "ember_baseline_sigma_log": 0.5,
+      "climate_trend_central_per_yr": 0.03,
+      "climate_trend_sigma": 0.015
+    }
+  },
+  "fsim_summary": {
+    "bp": {
+      "min": 0.00041000000000000005,
+      "med": 0.00045000000000000004,
+      "max": 0.00102
+    },
+    "flep8_burnable": {
+      "n": 5,
+      "max": 0.096
+    }
+  },
+  "decision_table": [
+    {
+      "horizon": 5,
+      "p_loss_median": 0.0007358517847207979,
+      "p_loss_p5": 0.0002747532184434631,
+      "p_loss_p95": 0.0017160910161303554,
+      "E_loss": 267.2,
+      "P95_loss": 0.0,
+      "P99_loss": 0.0,
+      "cum_premium": 120000,
+      "verdict": "Self-insure (HOA vote rational)"
+    },
+    {
+      "horizon": 10,
+      "p_loss_median": 0.0015705319751614932,
+      "p_loss_p5": 0.0005858430348924304,
+      "p_loss_p95": 0.003685131914197587,
+      "E_loss": 801.6,
+      "P95_loss": 0.0,
+      "P99_loss": 0.0,
+      "cum_premium": 240000,
+      "verdict": "Self-insure (HOA vote rational)"
+    },
+    {
+      "horizon": 15,
+      "p_loss_median": 0.0025041380250774292,
+      "p_loss_p5": 0.0009302923863356794,
+      "p_loss_p95": 0.00588678377137018,
+      "E_loss": 868.4,
+      "P95_loss": 0.0,
+      "P99_loss": 0.0,
+      "cum_premium": 360000,
+      "verdict": "Self-insure (HOA vote rational)"
+    }
+  ],
+  "p_annual_summary": {
+    "median": 0.00013723336002104087,
+    "mean": 0.0001550254978110836,
+    "p5": 5.162211774915909e-05,
+    "p95": 0.00031901393606268715
+  },
+  "base_E_loss_15yr": 935.2,
+  "sensitivity": [
+    {
+      "label": "Ember baseline high (1e-3)",
+      "delta_E_loss": 3607.2
+    },
+    {
+      "label": "Vulnerability = best (0.30)",
+      "delta_E_loss": -668.0
+    },
+    {
+      "label": "Ember baseline low (5e-5)",
+      "delta_E_loss": -534.4000000000001
+    },
+    {
+      "label": "FLEP8 = max (0.10)",
+      "delta_E_loss": 534.3999999999999
+    },
+    {
+      "label": "BP at neighborhood P95 (\u22480.001)",
+      "delta_E_loss": 400.79999999999995
+    },
+    {
+      "label": "BP at parcel-cell P5 (\u22480.00041)",
+      "delta_E_loss": 267.20000000000005
+    },
+    {
+      "label": "Vulnerability = worst (0.90)",
+      "delta_E_loss": 267.20000000000005
+    },
+    {
+      "label": "FLEP8 = 0 (no burnable cells)",
+      "delta_E_loss": -133.60000000000002
+    },
+    {
+      "label": "Climate trend = 0 %/yr",
+      "delta_E_loss": -133.60000000000002
+    },
+    {
+      "label": "Climate trend = 6 %/yr",
+      "delta_E_loss": 0.0
+    }
+  ],
+  "run_timestamp_utc": "2026-06-19T02:48:32.268452+00:00"
+}

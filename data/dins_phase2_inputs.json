@@ -1,0 +1,58 @@
+{
+  "training_n": 2007,
+  "training_auc": 0.8836755192756003,
+  "approach_A_empirical_rates": {
+    "original_undefended": 0.6517412935323383,
+    "original_defended": 0.33962264150943394,
+    "partial_retrofit": 0.18796992481203006
+  },
+  "approach_B_logreg_predictions": {
+    "original_1980_undefended": 0.583287770404029,
+    "original_1980_defended": 0.3623820770726872,
+    "partial_retrofit_defended": 0.17657278074279592,
+    "full_retrofit_defended": 0.025707896658953896,
+    "lapsed_no_defense": 0.583287770404029
+  },
+  "phase2_scenarios": {
+    "best_realized": {
+      "prob": 0.2,
+      "mult": 0.025707896658953896,
+      "desc": "Full retrofit + active defense maintained 15 yrs"
+    },
+    "expected": {
+      "prob": 0.5,
+      "mult": 0.17657278074279592,
+      "desc": "Partial retrofit (vents/eaves) + sometimes defended"
+    },
+    "degraded": {
+      "prob": 0.25,
+      "mult": 0.3623820770726872,
+      "desc": "No retrofit but defended (manager active)"
+    },
+    "worst": {
+      "prob": 0.05,
+      "mult": 0.583287770404029,
+      "desc": "Original 1980 attributes, undefended (HOA failure)"
+    }
+  },
+  "phase2_E_multiplier": 0.21318787749156198,
+  "phase1_E_multiplier": 0.568,
+  "bootstrap_partial_retrofit": {
+    "median": 0.237504770940424,
+    "ci_low": 0.17469809179466922,
+    "ci_high": 0.3071200489708326,
+    "mean": 0.2380976162817807
+  },
+  "logreg_top_coefficients": {
+    "eaves=missing": 3.753597890473779,
+    "roof=missing": -2.9756239998419747,
+    "roof=vulnerable": 2.095170932664393,
+    "year_bucket=missing": -1.7695256100067762,
+    "defended=yes": -0.9013249009625547,
+    "year_bucket=pre1960": -0.7475053786501562,
+    "vent=vulnerable": 0.715977229505089,
+    "vent=missing": 0.6873054043652832,
+    "year_bucket=1990s": -0.26231435855470087,
+    "year_bucket=2000plus": -0.24978345890066517
+  }
+}

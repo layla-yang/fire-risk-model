@@ -1,0 +1,114 @@
+{
+  "phase": 3,
+  "config": {
+    "climate_ensemble_members": [
+      "HadGEM2-ES_rcp45",
+      "HadGEM2-ES_rcp85",
+      "CNRM-CM5_rcp45",
+      "CNRM-CM5_rcp85",
+      "CanESM2_rcp45",
+      "CanESM2_rcp85",
+      "MIROC5_rcp45",
+      "MIROC5_rcp85"
+    ],
+    "beta_per_C": {
+      "central": 0.75,
+      "low": 0.5,
+      "high": 1.0
+    },
+    "start_year": 2026,
+    "horizons": [
+      5,
+      10,
+      15
+    ]
+  },
+  "decision_table": [
+    {
+      "horizon": 5,
+      "p_loss_median": 0.008616741069639389,
+      "p_loss_p5": 0.00194135161544155,
+      "p_loss_p95": 0.031376672358757976,
+      "E_loss": 4141.6,
+      "P95_loss": 0.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 120000,
+      "verdict": "Borderline \u2014 tail hits"
+    },
+    {
+      "horizon": 10,
+      "p_loss_median": 0.017253591074467,
+      "p_loss_p5": 0.004013980715813037,
+      "p_loss_p95": 0.06181504724432386,
+      "E_loss": 8049.4,
+      "P95_loss": 0.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 240000,
+      "verdict": "Borderline \u2014 tail hits"
+    },
+    {
+      "horizon": 15,
+      "p_loss_median": 0.025925178264898485,
+      "p_loss_p5": 0.00603587577966801,
+      "p_loss_p95": 0.09140261897094602,
+      "E_loss": 11589.8,
+      "P95_loss": 0.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 360000,
+      "verdict": "Self-insure"
+    }
+  ],
+  "climate_summary": {
+    "HadGEM2-ES_rcp45": {
+      "baseline_c": 13.65071258544502,
+      "delta_15yr_c": 0.7149124145616715,
+      "fclim_15yr": 1.7094715897547654
+    },
+    "HadGEM2-ES_rcp85": {
+      "baseline_c": 13.82899322509002,
+      "delta_15yr_c": 0.7350021362433383,
+      "fclim_15yr": 1.7354237192713282
+    },
+    "CNRM-CM5_rcp45": {
+      "baseline_c": 13.899015808110025,
+      "delta_15yr_c": 0.09908396401666006,
+      "fclim_15yr": 1.077143869709261
+    },
+    "CNRM-CM5_rcp85": {
+      "baseline_c": 13.810403442395028,
+      "delta_15yr_c": 0.6719390869049959,
+      "fclim_15yr": 1.6552537414583792
+    },
+    "CanESM2_rcp45": {
+      "baseline_c": 14.079507446295025,
+      "delta_15yr_c": 0.7279469807916655,
+      "fclim_15yr": 1.7262652080746688
+    },
+    "CanESM2_rcp85": {
+      "baseline_c": 14.219161987300021,
+      "delta_15yr_c": 0.9426015218133345,
+      "fclim_15yr": 2.0277993507465184
+    },
+    "MIROC5_rcp45": {
+      "baseline_c": 13.837506103520024,
+      "delta_15yr_c": 0.5130452474000026,
+      "fclim_15yr": 1.469296824332227
+    },
+    "MIROC5_rcp85": {
+      "baseline_c": 13.556175231940026,
+      "delta_15yr_c": 1.1045689900733335,
+      "fclim_15yr": 2.2897135961358273
+    }
+  },
+  "p_annual_summary_t0": {
+    "median": 0.0016943999778884777,
+    "p5": 0.00035620959725618837,
+    "p95": 0.0063387801377891495
+  },
+  "p_annual_summary_timeavg_15yr": {
+    "median": 0.0017511439507124655,
+    "p5": 0.0004036110208174529,
+    "p95": 0.006390213875290006
+  },
+  "run_timestamp_utc": "2026-06-19T03:36:30.852314+00:00"
+}

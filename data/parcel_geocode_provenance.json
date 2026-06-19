@@ -1,0 +1,16 @@
+{
+  "address": "759 Boulder Ct, Stateline, NV 89449",
+  "queried_at_utc": "2026-06-19T01:56:57.796763Z",
+  "sources": {
+    "census": {
+      "lat": 38.967875844804,
+      "lon": -119.887425143702,
+      "matched_address": "759 BOULDER CT, STATELINE, NV, 89449",
+      "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=759+Boulder+Ct%2C+Stateline%2C+NV+89449&benchmark=Public_AR_Current&format=json"
+    },
+    "nominatim": {
+      "error": "no matches",
+      "url": "https://nominatim.openstreetmap.org/search?q=759+Boulder+Ct%2C+Stateline%2C+NV+89449&format=json&limit=1&addressdetails=1"
+    }
+  }
+}

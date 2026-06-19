@@ -1,0 +1,133 @@
+{
+  "parcel": {
+    "lat": 38.967876,
+    "lon": -119.887425,
+    "address": "759 Boulder Ct, Stateline, NV 89449"
+  },
+  "queried_at_utc": "2026-06-19T02:11:38.576503+00:00",
+  "grid_spacing_deg": {
+    "dlat": 0.00027,
+    "dlon": 0.00035,
+    "approx_meters": 30
+  },
+  "grid_shape": "5x5 (rows: N\u2192S, cols: W\u2192E)",
+  "raw_values": {
+    "BP": [
+      [
+        93,
+        95,
+        97,
+        48,
+        48
+      ],
+      [
+        94,
+        45,
+        45,
+        46,
+        46
+      ],
+      [
+        44,
+        44,
+        44,
+        45,
+        45
+      ],
+      [
+        43,
+        43,
+        42,
+        44,
+        44
+      ],
+      [
+        93,
+        41,
+        97,
+        100,
+        102
+      ]
+    ],
+    "FLEP4": [
+      [
+        0,
+        221,
+        219,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        311,
+        0,
+        2
+      ]
+    ],
+    "FLEP8": [
+      [
+        0,
+        2,
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        96,
+        0,
+        2
+      ]
+    ]
+  },
+  "scaling_note": "BP raw int / 100000 = annual burn probability (per WRC tech docs). FLEP raw int / 1000 = conditional probability.",
+  "sources": {
+    "BP": "https://imagery.geoplatform.gov/iipp/rest/services/Fire_Aviation/USFS_EDW_RMRS_WRC_BurnProbability/ImageServer",
+    "FLEP4": "https://imagery.geoplatform.gov/iipp/rest/services/Fire_Aviation/USFS_EDW_RMRS_WRC_FlameLengthExceedProb4ft/ImageServer",
+    "FLEP8": "https://imagery.geoplatform.gov/iipp/rest/services/Fire_Aviation/USFS_EDW_RMRS_WRC_FlameLengthExceedProb8ft/ImageServer"
+  }
+}

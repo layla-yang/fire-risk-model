@@ -1,0 +1,88 @@
+{
+  "phase": 4,
+  "config_summary": {
+    "wildfire": "empirical NIFC anchor, lognormal(med=0.0035/yr, sigma=0.6)",
+    "interior": "NFPA-decomposed: per_unit=0.0066, p_shell~Beta(5.4,994.6), mean=0.0054"
+  },
+  "annual_p_loss": {
+    "median": 0.0016773324066271479,
+    "p5": 0.00037448161173201007,
+    "p95": 0.005775889677523727,
+    "mean": 0.002191721609321154
+  },
+  "hazard_decomposition": {
+    "wildfire_median": 0.0013003701836922983,
+    "interior_median": 0.00030457863303434696
+  },
+  "decision_table": [
+    {
+      "horizon": 5,
+      "p_loss_median": 0.012075391952209025,
+      "p_loss_p5": 0.002352477110628981,
+      "p_loss_p95": 0.04494288401790376,
+      "E_loss": 5444.2,
+      "P95_loss": 0.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 120000
+    },
+    {
+      "horizon": 10,
+      "p_loss_median": 0.02600676662739082,
+      "p_loss_p5": 0.004913509051052251,
+      "p_loss_p95": 0.09479642980668607,
+      "E_loss": 11623.2,
+      "P95_loss": 0.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 240000
+    },
+    {
+      "horizon": 15,
+      "p_loss_median": 0.040746664413925326,
+      "p_loss_p5": 0.007579499968632375,
+      "p_loss_p95": 0.14953780989241874,
+      "E_loss": 17601.8,
+      "P95_loss": 334000.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 360000
+    }
+  ],
+  "empirical_anchor": {
+    "2": {
+      "n_fires": 2,
+      "n_unique_years": 2,
+      "n_big_fires": 0,
+      "annual_rate": 0.04878048780487805
+    },
+    "5": {
+      "n_fires": 5,
+      "n_unique_years": 3,
+      "n_big_fires": 0,
+      "annual_rate": 0.07317073170731707
+    },
+    "10": {
+      "n_fires": 11,
+      "n_unique_years": 7,
+      "n_big_fires": 2,
+      "annual_rate": 0.17073170731707318
+    },
+    "20": {
+      "n_fires": 61,
+      "n_unique_years": 26,
+      "n_big_fires": 6,
+      "annual_rate": 0.6341463414634146
+    },
+    "30": {
+      "n_fires": 135,
+      "n_unique_years": 35,
+      "n_big_fires": 13,
+      "annual_rate": 0.8536585365853658
+    },
+    "50": {
+      "n_fires": 329,
+      "n_unique_years": 40,
+      "n_big_fires": 30,
+      "annual_rate": 0.975609756097561
+    }
+  },
+  "run_timestamp_utc": "2026-06-19T05:31:12.137460+00:00"
+}

@@ -1,0 +1,77 @@
+{
+  "phase": 2,
+  "config": {
+    "vuln_scenarios": {
+      "best_realized": {
+        "prob": 0.2,
+        "mult": 0.025707896658953896,
+        "desc": "Full retrofit + active defense maintained 15 yrs"
+      },
+      "expected": {
+        "prob": 0.5,
+        "mult": 0.17657278074279592,
+        "desc": "Partial retrofit (vents/eaves) + sometimes defended"
+      },
+      "degraded": {
+        "prob": 0.25,
+        "mult": 0.3623820770726872,
+        "desc": "No retrofit but defended (manager active)"
+      },
+      "worst": {
+        "prob": 0.05,
+        "mult": 0.583287770404029,
+        "desc": "Original 1980 attributes, undefended (HOA failure)"
+      }
+    },
+    "ember_baseline_med": 0.0002,
+    "interior_n_units": "4-16 uniform",
+    "per_unit_fire_rate": 0.003,
+    "p_shell_given_fire": 0.07
+  },
+  "decision_table": [
+    {
+      "horizon": 5,
+      "p_loss_median": 0.009000593494335574,
+      "p_loss_p5": 0.001815926384687211,
+      "p_loss_p95": 0.03320172126120647,
+      "E_loss": 3807.6,
+      "P95_loss": 0.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 120000,
+      "verdict": "Borderline \u2014 tail of $334K hits"
+    },
+    {
+      "horizon": 10,
+      "p_loss_median": 0.019115412466854054,
+      "p_loss_p5": 0.0038807843394110366,
+      "p_loss_p95": 0.06978394162418546,
+      "E_loss": 8784.2,
+      "P95_loss": 0.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 240000,
+      "verdict": "Borderline \u2014 tail of $334K hits"
+    },
+    {
+      "horizon": 15,
+      "p_loss_median": 0.030449833349380395,
+      "p_loss_p5": 0.006174013399408252,
+      "p_loss_p95": 0.10939164328987563,
+      "E_loss": 13760.8,
+      "P95_loss": 0.0,
+      "P99_loss": 334000.0,
+      "cum_premium": 360000,
+      "verdict": "Self-insure"
+    }
+  ],
+  "hazard_decomposition": {
+    "wildfire_direct_median": 6.961205308003986e-06,
+    "wildfire_indirect_median": 3.68753379907146e-05,
+    "interior_ignition_median": 0.00162493928532903
+  },
+  "p_annual_summary": {
+    "median": 0.0016854748048080793,
+    "p5": 0.00033927639873163507,
+    "p95": 0.006256646385401078
+  },
+  "run_timestamp_utc": "2026-06-19T03:21:16.050170+00:00"
+}

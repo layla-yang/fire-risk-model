@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STR Purchase Calculator — 759 Boulder Ct (Wildfire-Risk Adjusted)</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+         max-width: 1400px; margin: 24px auto; padding: 0 24px;
+         color: #222; background: #f5f7fa; line-height: 1.5; }
+  h1 { font-size: 26px; margin-bottom: 4px; color: #111; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+  .card { background: white; border-radius: 8px; padding: 18px 22px;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 18px; }
+  .card h2 { margin: 0 0 12px; font-size: 15px; color: #444; text-transform: uppercase;
+             letter-spacing: 0.5px; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; }
+  .input-row { margin: 12px 0; }
+  .input-row label { display: flex; justify-content: space-between;
+                     font-size: 13px; color: #444; margin-bottom: 4px; }
+  .input-row label .v { font-weight: 600; color: #1d4ed8;
+                         font-family: 'SF Mono', Menlo, monospace; }
+  .input-row input[type=range] { width: 100%; }
+  .verdict { padding: 20px 24px; border-radius: 8px; margin-bottom: 18px; }
+  .verdict.buy       { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-left: 6px solid #10b981; }
+  .verdict.negotiate { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-left: 6px solid #f59e0b; }
+  .verdict.walk      { background: linear-gradient(135deg, #f0f7ff, #dbeafe); border-left: 6px solid #3b82f6; }
+  .verdict h2 { font-size: 22px; margin: 0 0 8px; }
+  .verdict.buy h2       { color: #047857; }
+  .verdict.negotiate h2 { color: #b45309; }
+  .verdict.walk h2      { color: #1e40af; }
+  .verdict p { margin: 0; font-size: 14px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 14px 0; }
+  .stat { background: white; padding: 14px; border: 2px solid #3b82f6; border-radius: 6px; text-align: center; }
+  .stat .num { font-size: 24px; font-weight: 700; color: #1d4ed8; display: block; line-height: 1.1; }
+  .stat .lbl { font-size: 11px; color: #666; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+  th { background: #2c3e50; color: white; padding: 8px 10px; text-align: left; font-size: 11px; }
+  td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+  tr:nth-child(even) td { background: #f7f7f7; }
+  td.num, th.num { text-align: right; font-family: 'SF Mono', Menlo, monospace; }
+  .chart-wrap { background: white; padding: 16px; border-radius: 6px; margin-bottom: 14px; }
+  .chart-wrap h2 { margin: 0 0 10px; font-size: 15px; color: #444;
+                    text-transform: uppercase; letter-spacing: 0.5px; }
+  .chart-wrap .canvas-host { position: relative; height: 280px; }
+  .readout { font-size: 13px; color: #444; margin-top: 12px; line-height: 1.7; }
+  .footer { font-size: 11px; color: #888; margin-top: 30px; padding-top: 12px; border-top: 1px solid #ddd; }
+  .pos { color: #047857; font-weight: 600; }
+  .neg { color: #b91c1c; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>STR Purchase Calculator — 759 Boulder Ct, Stateline NV</h1>
+<div class="sub">
+  2BR/2BA condo, 840 sqft, ½ mile from Heavenly · Wildfire-risk adjusted · Drag sliders to explore
+</div>
+
+<div id="verdict" class="verdict walk">
+  <h2 id="verdict-head">Computing…</h2>
+  <p id="verdict-body">—</p>
+</div>
+
+<div class="stats" id="headline-stats"></div>
+
+<div class="grid">
+  <div>
+    <div class="card">
+      <h2>Purchase</h2>
+      <div class="input-row"><label>Purchase price <span class="v" id="v_price">$420,000</span></label>
+        <input type="range" id="price" min="300000" max="600000" step="5000" value="420000"></div>
+      <div class="input-row"><label>Down payment <span class="v" id="v_dp">25%</span></label>
+        <input type="range" id="dp" min="20" max="100" step="5" value="25"></div>
+      <div class="input-row"><label>Mortgage rate <span class="v" id="v_rate">7.0%</span></label>
+        <input type="range" id="rate" min="5" max="10" step="0.1" value="7"></div>
+      <div class="input-row"><label>Closing costs <span class="v" id="v_close">2.5%</span></label>
+        <input type="range" id="close" min="1" max="5" step="0.1" value="2.5"></div>
+    </div>
+
+    <div class="card">
+      <h2>STR revenue</h2>
+      <div class="input-row"><label>Annual gross revenue <span class="v" id="v_rev">$42,000</span></label>
+        <input type="range" id="rev" min="25000" max="80000" step="500" value="42000">
+        <div style="font-size:11px;color:#888;margin-top:3px">Stateline avg: $42K (ADR $507 × 38% occ)</div></div>
+      <div class="input-row"><label>Revenue growth <span class="v" id="v_revg">2.0%/yr</span></label>
+        <input type="range" id="revg" min="-2" max="6" step="0.5" value="2"></div>
+      <div class="input-row"><label>Property mgmt fee <span class="v" id="v_mgmt">25%</span></label>
+        <input type="range" id="mgmt" min="0" max="35" step="1" value="25"></div>
+    </div>
+
+    <div class="card">
+      <h2>Operating costs</h2>
+      <div class="input-row"><label>HOA fees <span class="v" id="v_hoa">$500/mo</span></label>
+        <input type="range" id="hoa" min="200" max="1500" step="25" value="500"></div>
+      <div class="input-row"><label>Property tax rate <span class="v" id="v_tax">0.70%</span></label>
+        <input type="range" id="tax" min="0.4" max="1.5" step="0.05" value="0.7"></div>
+      <div class="input-row"><label>Maintenance reserve <span class="v" id="v_maint">1.0%/yr</span></label>
+        <input type="range" id="maint" min="0.3" max="2.5" step="0.1" value="1.0"></div>
+      <div class="input-row"><label>Insurance <span class="v" id="v_ins">$0 (uninsured)</span></label>
+        <input type="range" id="ins" min="0" max="30000" step="1000" value="0"></div>
+    </div>
+
+    <div class="card">
+      <h2>Hold horizon &amp; exit</h2>
+      <div class="input-row"><label>Holding period <span class="v" id="v_hold">15 years</span></label>
+        <input type="range" id="hold" min="3" max="20" step="1" value="15"></div>
+      <div class="input-row"><label>Appreciation <span class="v" id="v_appr">3.0%/yr</span></label>
+        <input type="range" id="appr" min="-3" max="6" step="0.25" value="3"></div>
+      <div class="input-row"><label>Uninsurability discount at sale <span class="v" id="v_disc">10%</span></label>
+        <input type="range" id="disc" min="0" max="30" step="1" value="10"></div>
+      <div class="input-row"><label>Selling costs <span class="v" id="v_sell">6%</span></label>
+        <input type="range" id="sell" min="3" max="10" step="0.5" value="6"></div>
+    </div>
+
+    <div class="card">
+      <h2>Wildfire risk</h2>
+      <div class="input-row"><label>Annual P(wildfire total loss) <span class="v" id="v_pwf">0.13%</span></label>
+        <input type="range" id="pwf" min="0.05" max="1.5" step="0.01" value="0.13"></div>
+      <div class="input-row"><label>Annual P(interior fire total loss) <span class="v" id="v_pint">0.030%</span></label>
+        <input type="range" id="pint" min="0.005" max="0.20" step="0.005" value="0.030"></div>
+      <div class="input-row"><label>Climate trend <span class="v" id="v_clim">+3%/yr</span></label>
+        <input type="range" id="clim" min="0" max="6" step="0.5" value="3"></div>
+      <div class="input-row"><label>MC iterations <span class="v" id="v_mc">2,000</span></label>
+        <input type="range" id="mc" min="500" max="5000" step="500" value="2000"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="chart-wrap">
+      <h2>If you buy: probability your total return is at least $X</h2>
+      <div class="canvas-host"><canvas id="chart-returns"></canvas></div>
+      <div id="cdf-readout" class="readout"></div>
+    </div>
+
+    <div class="chart-wrap">
+      <h2>Annual cash flow projection</h2>
+      <div class="canvas-host"><canvas id="chart-cashflow"></canvas></div>
+    </div>
+
+    <div class="chart-wrap">
+      <h2>Sensitivity — what moves median return the most</h2>
+      <div class="canvas-host" style="height:320px"><canvas id="chart-sens"></canvas></div>
+    </div>
+
+    <div class="chart-wrap">
+      <h2>Decision-relevant numbers</h2>
+      <div id="detail-table"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Model backed by: USFS Wildfire Risk to Communities (FSim), NIFC Interagency Fire Perimeter History 1984–2025
+  (394 fires within 50 mi), CAL FIRE DINS, NFPA US residential fire statistics, AirROI Stateline market data.
+  All inputs run client-side; no data leaves your browser. Decision-support only.
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+"use strict";
+
+// ============================ Utility ============================
+function fmt$(x) {
+  if (!isFinite(x)) return '?';
+  const sign = x < 0 ? '-' : '';
+  const a = Math.abs(x);
+  if (a >= 1e6) return sign + '$' + (a/1e6).toFixed(2) + 'M';
+  if (a >= 1e3) return sign + '$' + (a/1e3).toFixed(0) + 'K';
+  return sign + '$' + a.toFixed(0);
+}
+function fmt$exact(x) {
+  if (!isFinite(x)) return '?';
+  return (x<0?'-$':'$') + Math.abs(x).toLocaleString(undefined, {maximumFractionDigits: 0});
+}
+
+function normSample() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+function lognormSample(median, sigmaLog) {
+  return Math.exp(Math.log(median) + sigmaLog * normSample());
+}
+
+function mortgagePmt(P, annR, yrs) {
+  if (annR === 0) return P / (yrs * 12);
+  const r = annR / 12, n = yrs * 12;
+  return P * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+}
+function mortgageBalance(P, annR, yrs, yElapsed) {
+  if (yElapsed >= yrs) return 0;
+  const pmt = mortgagePmt(P, annR, yrs);
+  const r = annR / 12, k = yElapsed * 12;
+  return P * Math.pow(1+r, k) - pmt * (Math.pow(1+r, k) - 1) / r;
+}
+
+// ============================ Read inputs ============================
+function readInputs() {
+  const v = id => +document.getElementById(id).value;
+  return {
+    price: v('price'),  dp: v('dp')/100,  rate: v('rate')/100, close: v('close')/100,
+    rev: v('rev'),      revg: v('revg')/100, mgmt: v('mgmt')/100,
+    hoa: v('hoa'),      tax: v('tax')/100,  maint: v('maint')/100,  ins: v('ins'),
+    hold: v('hold'),    appr: v('appr')/100, disc: v('disc')/100,  sell: v('sell')/100,
+    pwf: v('pwf')/100,  pint: v('pint')/100, clim: v('clim')/100,  mc: v('mc'),
+  };
+}
+
+// ============================ Simulation ============================
+const SHELL_BASIS = 334000;
+
+function simulateOne(p) {
+  const downPayment  = p.price * p.dp;
+  const closingCosts = p.price * p.close;
+  const loanAmount   = p.price - downPayment;
+  const monthlyMort  = mortgagePmt(loanAmount, p.rate, 30);
+
+  const wfBase  = lognormSample(p.pwf,  0.5);
+  const intBase = lognormSample(p.pint, 0.3);
+
+  const cashflows = [-(downPayment + closingCosts)];
+  let revenue = p.rev, propValue = p.price;
+  let lossOccurred = false, lossYear = null;
+
+  for (let y = 1; y <= p.hold; y++) {
+    const climMult = 1 + p.clim * y;
+    const annualPLoss = wfBase * climMult + intBase;
+
+    if (!lossOccurred && Math.random() < annualPLoss) {
+      lossOccurred = true; lossYear = y;
+    }
+
+    if (lossOccurred && y === lossYear) {
+      // Correct loss accounting:
+      //   Insured: insurance pays SHELL_BASIS; you use it to pay off mortgage, pocket rest
+      //   Uninsured: you lose your equity (property value minus mortgage); bank takes loan loss
+      const mortBal = mortgageBalance(loanAmount, p.rate, 30, y);
+      let cfYear;
+      if (p.ins > 0) {
+        cfYear = SHELL_BASIS - mortBal;
+      } else {
+        const equity = propValue - mortBal;
+        cfYear = -equity;
+      }
+      cashflows.push(cfYear);
+      for (let yy = y + 1; yy <= p.hold; yy++) cashflows.push(0);
+      return finalize(cashflows, true, lossYear);
+    }
+
+    // Normal operating year
+    const netRev = revenue * (1 - p.mgmt);
+    const annHOA   = p.hoa * 12;
+    const annTax   = propValue * p.tax;
+    const annMaint = propValue * p.maint;
+    const annMort  = monthlyMort * 12;
+    const cfYear = netRev - annHOA - annTax - annMaint - annMort - p.ins;
+    cashflows.push(cfYear);
+    revenue   *= (1 + p.revg);
+    propValue *= (1 + p.appr);
+  }
+
+  // Exit at end of holding period (no loss occurred)
+  const exitValue   = propValue * (1 - p.disc);
+  const sellingCost = exitValue * p.sell;
+  const mortBal     = mortgageBalance(loanAmount, p.rate, 30, p.hold);
+  const exitProceeds = exitValue - sellingCost - mortBal;
+  cashflows[cashflows.length - 1] += exitProceeds;
+
+  return finalize(cashflows, false, null);
+}
+
+function finalize(cashflows, lossOccurred, lossYear) {
+  const totalReturn = cashflows.reduce((a,b) => a + b, 0);
+  return { cashflows, totalReturn, lossOccurred, lossYear };
+}
+
+function simulate(p) {
+  const results = [];
+  for (let i = 0; i < p.mc; i++) results.push(simulateOne(p));
+  const totalReturns = results.map(r => r.totalReturn).sort((a,b) => a - b);
+  const lossEvents   = results.filter(r => r.lossOccurred).length;
+
+  const pct  = (arr, q) => arr[Math.floor((arr.length - 1) * q)];
+  const mean = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
+
+  const yearByYear = [];
+  for (let y = 0; y <= p.hold; y++) {
+    const yvals = results.map(r => r.cashflows[y] || 0).sort((a,b) => a - b);
+    yearByYear.push({ year: y, p5: pct(yvals, 0.05), p50: pct(yvals, 0.5), p95: pct(yvals, 0.95) });
+  }
+
+  return {
+    p, totalReturns, results,
+    summary: {
+      meanReturn:   mean(totalReturns),
+      medianReturn: pct(totalReturns, 0.5),
+      p5Return:     pct(totalReturns, 0.05),
+      p95Return:    pct(totalReturns, 0.95),
+      pLoss:        lossEvents / results.length,
+      pNegReturn:   totalReturns.filter(r => r < 0).length / totalReturns.length,
+      pBigGain:     totalReturns.filter(r => r >= 100000).length / totalReturns.length,
+      pBigLoss:     totalReturns.filter(r => r < -100000).length / totalReturns.length,
+      pCatLoss:     totalReturns.filter(r => r < -300000).length / totalReturns.length,
+    },
+    yearByYear,
+  };
+}
+
+// ============================ Sensitivity ============================
+function sensitivity(p) {
+  const base = simulate({...p, mc: Math.min(1000, p.mc)}).summary.medianReturn;
+  const tests = [
+    ["Purchase price −10%",      { price: p.price * 0.9 }],
+    ["Purchase price +10%",      { price: p.price * 1.1 }],
+    ["STR revenue −25%",         { rev: p.rev * 0.75 }],
+    ["STR revenue +25%",         { rev: p.rev * 1.25 }],
+    ["Appreciation 0%/yr",        { appr: 0 }],
+    ["Appreciation 6%/yr",        { appr: 0.06 }],
+    ["Uninsur. discount 0%",     { disc: 0 }],
+    ["Uninsur. discount 25%",    { disc: 0.25 }],
+    ["Mortgage rate −1.5%",      { rate: Math.max(0.04, p.rate - 0.015) }],
+    ["Mortgage rate +1.5%",      { rate: p.rate + 0.015 }],
+    ["Wildfire risk 2× higher",  { pwf: p.pwf * 2 }],
+    ["Wildfire risk 2× lower",   { pwf: p.pwf / 2 }],
+    ["HOA fees +50%",            { hoa: p.hoa * 1.5 }],
+    ["Buy insurance $24K/yr",    { ins: 24000 }],
+  ];
+  return tests.map(([label, patch]) => {
+    const sim = simulate({...p, ...patch, mc: 500});
+    return { label, delta: sim.summary.medianReturn - base };
+  }).sort((a,b) => Math.abs(b.delta) - Math.abs(a.delta));
+}
+
+// ============================ Rendering ============================
+let chartReturns = null, chartCashflow = null, chartSens = null;
+
+function safeDestroy(c) {
+  if (c) try { c.destroy(); } catch(e) {}
+}
+
+function renderVerdict(s, p) {
+  // Compute "conditional fire loss" — what's the dollar hit if a fire DOES happen
+  // (used to surface tail risk separately from probability-weighted return)
+  const cashIn = p.price * p.dp + p.price * p.close;
+  const pPos = 1 - s.pNegReturn;
+  const medROIpct = s.medianReturn / cashIn;  // total return as fraction of cash invested
+  const medAnnualized = Math.pow(1 + medROIpct, 1 / p.hold) - 1;
+
+  let cls, head, body;
+  // Decision logic:
+  //   BUY     : high prob of net positive AND median return positive AND catastrophic tail manageable
+  //   NEGOTIATE: positive median but downside (fire prob × loss size) is concerning
+  //   WALK     : negative median OR > 30% net-negative probability OR cat-loss > 5%
+  if (pPos >= 0.85 && s.medianReturn > 0 && s.pCatLoss <= 0.03) {
+    cls = 'buy';
+    head = 'BUY — the math works';
+    body = `Median outcome over ${p.hold} years: ${fmt$exact(s.medianReturn)} profit (≈${(medAnnualized*100).toFixed(1)}%/yr on the $${(cashIn/1000).toFixed(0)}K you put in). ${(pPos*100).toFixed(0)}% chance you net positive. If a fire-related total loss does happen, you lose roughly ${fmt$exact(-cashIn - Math.abs(s.medianReturn))} on average. That tail event has only a ${(s.pLoss*100).toFixed(1)}% probability over ${p.hold} years.`;
+  } else if (pPos >= 0.65 && s.medianReturn > 0) {
+    cls = 'negotiate';
+    head = 'NEGOTIATE — workable but the tail is uncomfortable';
+    body = `Median outcome: ${fmt$exact(s.medianReturn)} profit (≈${(medAnnualized*100).toFixed(1)}%/yr). ${(pPos*100).toFixed(0)}% chance positive, but ${(s.pCatLoss*100).toFixed(1)}% chance of catastrophic loss (>$300K). The fire-loss tail is meaningful. Consider negotiating ${Math.max(5, Math.ceil(s.pCatLoss * 100 * 4))}% off purchase price or insisting on master HOA insurance.`;
+  } else if (s.medianReturn > 0) {
+    cls = 'negotiate';
+    head = 'NEGOTIATE — modest expected return, real downside';
+    body = `Median outcome: ${fmt$exact(s.medianReturn)} profit (≈${(medAnnualized*100).toFixed(1)}%/yr). Only ${(pPos*100).toFixed(0)}% chance you net positive — that's a coin flip with downside. Need a meaningful price discount before this works.`;
+  } else {
+    cls = 'walk';
+    head = 'WALK — risk-adjusted return doesn\'t justify the deal';
+    body = `Median outcome: ${fmt$exact(s.medianReturn)} (≈${(medAnnualized*100).toFixed(1)}%/yr return). ${(s.pNegReturn*100).toFixed(0)}% chance of net loss. ${(s.pLoss*100).toFixed(1)}% chance of fire-related total loss. This deal needs a substantial price discount or different terms.`;
+  }
+  const vd = document.getElementById('verdict');
+  vd.className = 'verdict ' + cls;
+  document.getElementById('verdict-head').textContent = head;
+  document.getElementById('verdict-body').textContent = body;
+}
+
+function renderHeadlineStats(s, p) {
+  const cashIn = p.price * p.dp + p.price * p.close;
+  const medROIpct = s.medianReturn / cashIn;
+  const medAnnualized = Math.pow(1 + medROIpct, 1 / p.hold) - 1;
+  document.getElementById('headline-stats').innerHTML = `
+    <div class="stat"><span class="num">${fmt$(s.medianReturn)}</span><div class="lbl">Median total return<br>over ${p.hold} years</div></div>
+    <div class="stat"><span class="num">${(medAnnualized*100).toFixed(1)}%/yr</span><div class="lbl">Median annualized return<br>on $${(cashIn/1000).toFixed(0)}K cash invested</div></div>
+    <div class="stat"><span class="num">${((1 - s.pNegReturn)*100).toFixed(0)}%</span><div class="lbl">Chance you net positive<br>over ${p.hold} years</div></div>
+    <div class="stat"><span class="num">${(s.pLoss*100).toFixed(1)}%</span><div class="lbl">Chance of fire total loss<br>over ${p.hold} years</div></div>`;
+}
+
+function renderReturnsCDF(sim) {
+  const sorted = sim.totalReturns;  // already sorted
+  const N = sorted.length;
+  // Build the survival CDF: P(return ≥ x)
+  const cdfPts = [];
+  const stride = Math.max(1, Math.floor(N / 100));
+  for (let i = 0; i < N; i += stride) {
+    cdfPts.push({ x: sorted[i], y: 1 - (i / (N - 1)) });
+  }
+  cdfPts.push({ x: sorted[N - 1], y: 0 });
+
+  const median = sorted[Math.floor(N * 0.5)];
+  const p5 = sorted[Math.floor(N * 0.05)];
+  const p95 = sorted[Math.floor(N * 0.95)];
+  const xMin = Math.min(0, sorted[0]);
+  const xMax = Math.max(0, sorted[N - 1]);
+
+  safeDestroy(chartReturns);
+  chartReturns = new Chart(document.getElementById('chart-returns'), {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          label: 'P(return ≥ X)',
+          data: cdfPts,
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37, 99, 235, 0.12)',
+          fill: true,
+          pointRadius: 0,
+          borderWidth: 2.5,
+          tension: 0,
+        },
+        {
+          label: 'Break-even ($0)',
+          data: [{ x: 0, y: 0 }, { x: 0, y: 1 }],
+          borderColor: '#dc2626',
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+        },
+        {
+          label: `Median: ${fmt$(median)}`,
+          data: [{ x: median, y: 0.5 }],
+          borderColor: '#1d4ed8',
+          backgroundColor: '#1d4ed8',
+          pointRadius: 8,
+          pointHoverRadius: 10,
+          showLine: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      parsing: false,
+      animation: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 } } },
+        tooltip: { callbacks: {
+          label: ctx => `${fmt$exact(ctx.parsed.x)}  →  ${(ctx.parsed.y * 100).toFixed(1)}% chance of at least this`
+        }},
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          min: xMin,
+          max: xMax,
+          title: { display: true, text: 'Total return over holding period ($)' },
+          ticks: { callback: v => fmt$(v) },
+        },
+        y: {
+          min: 0, max: 1,
+          title: { display: true, text: 'Probability return is at least this much' },
+          ticks: { callback: v => (v * 100).toFixed(0) + '%' },
+        },
+      },
+    },
+  });
+
+  const s = sim.summary;
+  document.getElementById('cdf-readout').innerHTML = `
+    <b>How to read this:</b> the blue curve shows the chance your total return will be <i>at least</i> the $ amount on the x-axis.
+    The red dashed line is break-even ($0). Where the blue curve crosses the red line tells you the chance you profit.
+    <ul style="margin:8px 0 0; padding-left:20px;">
+      <li><span class="pos">${((1 - s.pNegReturn)*100).toFixed(0)}% chance you net positive</span> over ${sim.p.hold} years</li>
+      <li><span class="pos">${(s.pBigGain*100).toFixed(0)}% chance you make $100K+</span> in total profit</li>
+      <li><span class="neg">${(s.pNegReturn*100).toFixed(0)}% chance you net negative</span> (lose money overall)</li>
+      <li><span class="neg">${(s.pBigLoss*100).toFixed(0)}% chance you lose more than $100K</span></li>
+      <li><span class="neg">${(s.pCatLoss*100).toFixed(1)}% chance of catastrophic loss (>$300K)</span> — driven by fire events</li>
+      <li>Median: <b>${fmt$exact(median)}</b> · Bad case (5th pct): ${fmt$exact(p5)} · Good case (95th pct): ${fmt$exact(p95)}</li>
+    </ul>`;
+}
+
+function renderCashflowChart(sim) {
+  const yrs = sim.yearByYear.map(y => 'Year ' + y.year);
+  safeDestroy(chartCashflow);
+  chartCashflow = new Chart(document.getElementById('chart-cashflow'), {
+    type: 'line',
+    data: {
+      labels: yrs,
+      datasets: [
+        { label: 'Median', data: sim.yearByYear.map(y => y.p50),
+          borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.10)',
+          fill: false, tension: 0.15, borderWidth: 2.5, pointRadius: 3 },
+        { label: '5th pct (bad)', data: sim.yearByYear.map(y => y.p5),
+          borderColor: '#f59e0b', borderDash: [5,3], fill: false, tension: 0.15, pointRadius: 0 },
+        { label: '95th pct (good)', data: sim.yearByYear.map(y => y.p95),
+          borderColor: '#10b981', borderDash: [5,3], fill: false, tension: 0.15, pointRadius: 0 },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: { y: { ticks: { callback: v => fmt$(v) }, title: { display: true, text: 'Cash flow ($)' } } },
+    },
+  });
+}
+
+function renderSensitivity(p) {
+  const data = sensitivity(p);
+  safeDestroy(chartSens);
+  chartSens = new Chart(document.getElementById('chart-sens'), {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.label),
+      datasets: [{
+        data: data.map(d => d.delta),
+        backgroundColor: data.map(d => d.delta >= 0 ? '#10b981' : '#f59e0b'),
+      }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { callback: v => fmt$(v) },
+                       title: { display: true, text: 'Δ median total return vs base case' } } },
+    },
+  });
+}
+
+function renderDetailTable(sim) {
+  const p = sim.p, s = sim.summary;
+  const cashClose = p.price * p.dp + p.price * p.close;
+  const monthlyMort = mortgagePmt(p.price * (1 - p.dp), p.rate, 30);
+  const annualCF = p.rev * (1 - p.mgmt) - p.hoa*12 - p.price*p.tax - p.price*p.maint - p.ins - monthlyMort*12;
+  document.getElementById('detail-table').innerHTML = `
+    <table>
+      <tr><th>Item</th><th class="num">Amount</th></tr>
+      <tr><td>Cash to close (down payment + closing)</td><td class="num">${fmt$exact(cashClose)}</td></tr>
+      <tr><td>Annual mortgage P&amp;I</td><td class="num">${fmt$exact(monthlyMort*12)}</td></tr>
+      <tr><td>Annual HOA + tax + maintenance + insurance</td><td class="num">${fmt$exact(p.hoa*12 + p.price*p.tax + p.price*p.maint + p.ins)}</td></tr>
+      <tr><td>Annual net STR revenue (after mgmt fee)</td><td class="num">${fmt$exact(p.rev * (1 - p.mgmt))}</td></tr>
+      <tr><td><b>Year-1 operating cash flow</b></td><td class="num ${annualCF >= 0 ? 'pos' : 'neg'}"><b>${fmt$exact(annualCF)}</b></td></tr>
+      <tr><td colspan="2" style="background:#f0f7ff"><b>${p.hold}-year risk-adjusted outcome</b></td></tr>
+      <tr><td>Median total return</td><td class="num"><b>${fmt$exact(s.medianReturn)}</b></td></tr>
+      <tr><td>5th–95th percentile range</td><td class="num">${fmt$exact(s.p5Return)} — ${fmt$exact(s.p95Return)}</td></tr>
+      <tr><td>Chance of net positive return</td><td class="num">${((1-s.pNegReturn)*100).toFixed(0)}%</td></tr>
+      <tr><td>Chance of fire-related total loss</td><td class="num">${(s.pLoss*100).toFixed(1)}%</td></tr>
+    </table>`;
+}
+
+function render(sim) {
+  try { renderVerdict(sim.summary, sim.p); } catch(e) { console.error('Verdict:', e); }
+  try { renderHeadlineStats(sim.summary, sim.p); } catch(e) { console.error('Stats:', e); }
+  try { renderReturnsCDF(sim); } catch(e) { console.error('CDF chart:', e); }
+  try { renderCashflowChart(sim); } catch(e) { console.error('Cashflow chart:', e); }
+  try { renderSensitivity(sim.p); } catch(e) { console.error('Sensitivity:', e); }
+  try { renderDetailTable(sim); } catch(e) { console.error('Detail table:', e); }
+}
+
+// ============================ Wire up ============================
+function updateLabels() {
+  const p = readInputs();
+  document.getElementById('v_price').textContent = '$' + p.price.toLocaleString();
+  document.getElementById('v_dp').textContent    = (p.dp*100).toFixed(0) + '%';
+  document.getElementById('v_rate').textContent  = (p.rate*100).toFixed(1) + '%';
+  document.getElementById('v_close').textContent = (p.close*100).toFixed(1) + '%';
+  document.getElementById('v_rev').textContent   = '$' + p.rev.toLocaleString();
+  document.getElementById('v_revg').textContent  = (p.revg*100).toFixed(1) + '%/yr';
+  document.getElementById('v_mgmt').textContent  = (p.mgmt*100).toFixed(0) + '%';
+  document.getElementById('v_hoa').textContent   = '$' + p.hoa + '/mo';
+  document.getElementById('v_tax').textContent   = (p.tax*100).toFixed(2) + '%';
+  document.getElementById('v_maint').textContent = (p.maint*100).toFixed(1) + '%/yr';
+  document.getElementById('v_ins').textContent   = p.ins > 0 ? '$' + p.ins.toLocaleString() + '/yr' : '$0 (uninsured)';
+  document.getElementById('v_hold').textContent  = p.hold + ' years';
+  document.getElementById('v_appr').textContent  = (p.appr*100).toFixed(2) + '%/yr';
+  document.getElementById('v_disc').textContent  = (p.disc*100).toFixed(0) + '%';
+  document.getElementById('v_sell').textContent  = (p.sell*100).toFixed(1) + '%';
+  document.getElementById('v_pwf').textContent   = (p.pwf*100).toFixed(2) + '%';
+  document.getElementById('v_pint').textContent  = (p.pint*100).toFixed(3) + '%';
+  document.getElementById('v_clim').textContent  = '+' + (p.clim*100).toFixed(1) + '%/yr';
+  document.getElementById('v_mc').textContent    = p.mc.toLocaleString();
+}
+
+let timer = null;
+function refresh() {
+  updateLabels();
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    try {
+      const p = readInputs();
+      const sim = simulate(p);
+      render(sim);
+    } catch(e) {
+      console.error('Refresh failed:', e);
+    }
+  }, 120);
+}
+
+document.querySelectorAll('input').forEach(el => el.addEventListener('input', refresh));
+
+// First render
+window.addEventListener('load', refresh);
+refresh();
+</script>
+</body>
+</html>
